@@ -119,15 +119,15 @@ async function main() {
 
 main().catch((err) => {
   if ((err as NodeJS.ErrnoException)?.code === "EADDRINUSE") {
-    log.error(`Port ${arg("port") ?? 7420} is in use — another HQ may be running. Stop it, or pick another port: npx @setups-works/office --port 7421`);
+    log.error(`Port ${arg("port") ?? 7420} is in use — another HQ may be running. Stop it, or pick another port: npx @setupsworks/office --port 7421`);
     process.exit(1);
   }
   if ((err as NodeJS.ErrnoException)?.code === "EACCES") {
     const port = arg("port") ?? 7420;
     log.error(
       process.platform === "win32"
-        ? `Windows reserved port ${port} (Hyper-V, WSL and Docker reserve port ranges). Pick another: npx @setups-works/office --port 8420\n  See the reserved ranges with: netsh interface ipv4 show excludedportrange protocol=tcp`
-        : `Not allowed to use port ${port}. Pick another: npx @setups-works/office --port 8420`,
+        ? `Windows reserved port ${port} (Hyper-V, WSL and Docker reserve port ranges). Pick another: npx @setupsworks/office --port 8420\n  See the reserved ranges with: netsh interface ipv4 show excludedportrange protocol=tcp`
+        : `Not allowed to use port ${port}. Pick another: npx @setupsworks/office --port 8420`,
     );
     process.exit(1);
   }

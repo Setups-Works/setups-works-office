@@ -47,4 +47,4 @@ HQ calls the `sbx` CLI and reads its output. sbx 0.48 changed several outputs (f
 1. Bump `version` in `package.json` and merge to `main`.
 2. From a clean, up-to-date `main`, run `npm publish`. It builds first.
 
-Only members of the `setups-works` npm org can publish. The README on npm updates only when a new version is published.
+Only members of the `setupsworks` npm org can publish. The README on npm updates only when a new version is published.

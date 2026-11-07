@@ -2,9 +2,9 @@
 
 **Run a team of AI coding agents on your repo, and watch them work in a pixel-art office.**
 
-[![npm](https://img.shields.io/npm/v/@setups-works/office?color=cb3837&label=npm)](https://www.npmjs.com/package/@setups-works/office)
-[![license](https://img.shields.io/npm/l/@setups-works/office)](LICENSE)
-[![node](https://img.shields.io/node/v/@setups-works/office)](https://nodejs.org)
+[![npm](https://img.shields.io/npm/v/@setupsworks/office?color=cb3837&label=npm)](https://www.npmjs.com/package/@setupsworks/office)
+[![license](https://img.shields.io/npm/l/@setupsworks/office)](LICENSE)
+[![node](https://img.shields.io/node/v/@setupsworks/office)](https://nodejs.org)
 
 ![The Setups Works Office office: a lead and two developers at their desks, the task board on the wall, pull requests on the board and the review gate on the belt](docs/images/office.png)
 
@@ -25,7 +25,7 @@ Agents run **Claude Code** or **Codex**. Everything runs on your machine.
 From inside a git repo that has a GitHub remote:
 
 ```bash
-npx @setups-works/office@latest
+npx @setupsworks/office@latest
 ```
 
 HQ opens in your browser and walks you through the rest:
@@ -41,7 +41,7 @@ HQ opens in your browser and walks you through the rest:
 ```bash
 mkdir hq-test && cd hq-test
 git init -b main && echo "# HQ test" > README.md && git add . && git commit -m init
-npx @setups-works/office@latest
+npx @setupsworks/office@latest
 ```
 
 ### Options
@@ -53,7 +53,7 @@ setups-works-office --repo <path>   the repo to manage (default: current folder)
        --version, --help
 ```
 
-Use it often? `npm install -g @setups-works/office`, then run `setups-works-office` in any repo.
+Use it often? `npm install -g @setupsworks/office`, then run `setups-works-office` in any repo.
 
 ## Requirements
 
@@ -88,7 +88,7 @@ More detail on workspaces, sandboxes, MCP servers, app variables and what HQ sav
 
 | Problem | Fix |
 | --- | --- |
-| A setup check shows "!" but the tool works | You may be on an old HQ. Run `npx @setups-works/office@latest` (npx can keep an old version cached). |
+| A setup check shows "!" but the tool works | You may be on an old HQ. Run `npx @setupsworks/office@latest` (npx can keep an old version cached). |
 | Start fails: "network policy has not been initialized" | A new Docker Sandboxes install needs a base policy once: `sbx policy init balanced`. |
 | Agents fail to start with a sign-in error | Your Docker sign-in expired. Run `sbx login`, then **Check again** in the setup checklist. |
 | Agents can't push or open PRs | Run `sbx secret set github --command "gh auth token"`, and check the repo has a GitHub `origin`. |
@@ -97,7 +97,7 @@ More detail on workspaces, sandboxes, MCP servers, app variables and what HQ sav
 | An agent's state never changes | The sandbox can't reach HQ. `sbx policy ls` should show `localhost:<port>` and `host.docker.internal:<port>` allowed; HQ adds them on start. |
 | "Port 7420 is in use" | Another HQ is running. Stop it, or use `--port 7421`. |
 | Windows: `listen EACCES` on start | Windows reserved that port. Use `--port 8420`. |
-| `posix_spawnp failed` when opening a terminal | Run `npx clear-npx-cache`, then `npx @setups-works/office@latest`. |
+| `posix_spawnp failed` when opening a terminal | Run `npx clear-npx-cache`, then `npx @setupsworks/office@latest`. |
 
 **Remove a project:** delete each agent in Settings → Team (this removes its sandbox and, if you choose, its folder), then delete `~/.jsmhq/<project>`.
 

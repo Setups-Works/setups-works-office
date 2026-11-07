@@ -107,7 +107,7 @@ Tip: add a short `plan.md` (stack, features, phases) and push it before starting
 From your project's folder:
 
 ```bash
-npx @setups-works/office@latest
+npx @setupsworks/office@latest
 ```
 
 `@latest` makes sure npx doesn't reuse an old version it cached. HQ opens your browser. If it doesn't, open the `http://127.0.0.1:7420/?token=…` link printed in the terminal.

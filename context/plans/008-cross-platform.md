@@ -1,7 +1,7 @@
 ## Implementation plan: Linux and Windows support
 
 ### What we're building
-`npx @setups-works/office` works the same on macOS, Linux and Windows 11: the office, sandboxes, Team MCP, delivery and the PR loop. Mac keeps exactly today's behaviour. Linux is a small fix; Windows gets its own session backend because tmux doesn't exist there.
+`npx @setupsworks/office` works the same on macOS, Linux and Windows 11: the office, sandboxes, Team MCP, delivery and the PR loop. Mac keeps exactly today's behaviour. Linux is a small fix; Windows gets its own session backend because tmux doesn't exist there.
 
 ### What we know
 - **Linux blocker:** `node-pty` 1.1.0 ships prebuilt binaries for macOS and Windows only (`prebuilds/` has no `linux-*`). On Linux and WSL, npx has to compile it with python, make and g++, which a fresh machine doesn't have. Likely cause of the silent WSL failure.
@@ -34,7 +34,7 @@
 7. **Windows details:** setup checks, the `EACCES` message, opening the browser (`cmd /c start` with proper escaping), the Local-mode env-file note, README Windows section.
 8. **Test on a real Windows 11 PC** (you): welcome, Sandbox and Local agents with Claude and Codex, messages, PR loop, stop/restart. Fix and repeat.
 
-- **Done when:** a fresh Mac, Ubuntu 24.04 and Windows 11 machine can each run `npx @setups-works/office`, start a Claude and a Codex agent in a sandbox, and pass a message from the lead to a worker; the Mac flow is unchanged; CI runs on all three.
+- **Done when:** a fresh Mac, Ubuntu 24.04 and Windows 11 machine can each run `npx @setupsworks/office`, start a Claude and a Codex agent in a sandbox, and pass a message from the lead to a worker; the Mac flow is unchanged; CI runs on all three.
 
 ### Not in this plan
 - Keeping Windows agents alive after HQ stops (background helper).

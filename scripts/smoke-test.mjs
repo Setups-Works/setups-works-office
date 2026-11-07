@@ -54,7 +54,7 @@ try {
 } catch (e) {
   fail(`npm install failed:\n${e.stdout ?? ""}${e.stderr ?? ""}`);
 }
-const pkgRoot = join(app, "node_modules", "@setups-works", "office");
+const pkgRoot = join(app, "node_modules", "@setupsworks", "office");
 const bin = join(pkgRoot, "bin", "setups-works-office.mjs");
 step(`version ${sh(process.execPath, [bin, "--version"]).trim()}`);
 

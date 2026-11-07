@@ -13,7 +13,7 @@ if (args.includes("--help") || args.includes("-h")) {
   console.log(`Setups Works Office ${pkg.version} — a pixel office for your team of AI coding agents.
 
 Usage:
-  npx @setups-works/office [options]          run inside a git repo
+  npx @setupsworks/office [options]          run inside a git repo
 
 Options:
   --repo <path>   the git repo to manage (default: current folder)
@@ -36,7 +36,7 @@ if (major < 20) {
 
 // Check option values here so a typo gets a clear message instead of a silent default.
 const fail = (msg) => {
-  console.error(`setups-works-office: ${msg}\nRun "npx @setups-works/office --help" for usage.`);
+  console.error(`setups-works-office: ${msg}\nRun "npx @setupsworks/office --help" for usage.`);
   process.exit(1);
 };
 for (const name of ["--repo", "--port"]) {
