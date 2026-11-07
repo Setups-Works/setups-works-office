@@ -15,3 +15,7 @@ prototypes/
 docs/archive/
 docs/initial-idea.md
 *.tsbuildinfo
+
+# Desktop app build output
+desktop-dist
+release

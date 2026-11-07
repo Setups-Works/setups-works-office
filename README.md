@@ -20,6 +20,10 @@ Agents run **Claude Code** or **Codex**. Everything runs on your machine.
 - **Your workflow.** Pull requests on GitHub, reviewed by CodeRabbit, Greptile, Copilot or you.
 - **Knows your stack.** Pick your tools (Next.js, Clerk, Stripe, Supabase…) and agents get their official agent skills and docs access.
 
+## Desktop app (macOS and Windows)
+
+Prefer a normal app to a terminal command? Download the installer from the [latest release](https://github.com/Setups-Works/setups-works-office/releases/latest): a `.dmg` for macOS (Apple silicon and Intel) or a `.exe` for Windows. It starts the same HQ server on a free localhost port, shows it in its own window, and updates itself in the background. Use **File → Open Project…** to pick the git repo your team works on.
+
 ## Quick start
 
 From inside a git repo that has a GitHub remote:

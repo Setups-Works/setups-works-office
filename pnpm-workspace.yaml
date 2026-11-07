@@ -1,7 +1,16 @@
 # pnpm settings (pnpm 10 reads onlyBuiltDependencies, pnpm 11 reads allowBuilds).
-# Only esbuild (Vite) may run install scripts. @lydell/node-pty ships prebuilt
-# binaries for every platform, so nothing is compiled on install.
+# esbuild (Vite) and electron (downloads its binary) may run install scripts.
+# @lydell/node-pty ships prebuilt binaries for every platform, so nothing is compiled on install.
 onlyBuiltDependencies:
   - esbuild
+  - electron
 allowBuilds:
   esbuild: true
+  electron: true
+# The desktop app is built for macOS (arm64 + x64) and Windows from one lockfile, so install the
+# per-platform node-pty binaries for all of them, not just this machine's.
+supportedArchitectures:
+  os: [current, darwin, win32, linux]
+  cpu: [current, arm64, x64]
+ignoredBuiltDependencies:
+  - electron-winstaller

@@ -1,5 +1,6 @@
 {
   "name": "@setupsworks/office",
+  "productName": "Setups Works Office",
   "version": "0.7.6",
   "description": "Run a team of AI coding agents (Claude Code, Codex) on your repo in Docker Sandboxes, and watch them work in a pixel-art office.",
   "license": "MIT",
@@ -49,14 +50,18 @@
     "dev": "vite",
     "dev:hq": "concurrently -k -n hq,ui -c magenta,cyan \"tsx watch server/main.ts --dev\" \"vite\"",
     "hq": "vite build --logLevel warn && tsx server/main.ts",
-    "typecheck": "tsc --noEmit -p . && tsc --noEmit -p server",
+    "typecheck": "tsc --noEmit -p . && tsc --noEmit -p server && tsc --noEmit -p desktop",
     "build": "tsc --noEmit -p . && tsc --noEmit -p server && vite build && node scripts/build-server.mjs",
     "preview": "vite preview",
     "prepack": "npm run build",
     "postinstall": "node scripts/fix-node-pty.mjs",
     "landing:dev": "vite --config landing-page/vite.config.ts",
     "landing:build": "tsc --noEmit -p landing-page && vite build --config landing-page/vite.config.ts",
-    "landing:preview": "vite preview --config landing-page/vite.config.ts"
+    "landing:preview": "vite preview --config landing-page/vite.config.ts",
+    "desktop:build": "npm run build && node scripts/build-desktop.mjs",
+    "desktop:dev": "npm run desktop:build && electron desktop-dist/main.cjs",
+    "desktop:pack": "npm run desktop:build && electron-builder --dir",
+    "desktop:dist": "npm run desktop:build && electron-builder"
   },
   "dependencies": {
     "@fontsource/inter": "^5.3.0",
@@ -80,6 +85,9 @@
     "@xterm/addon-web-links": "^0.11.0",
     "@xterm/xterm": "^5.5.0",
     "concurrently": "^10.0.6",
+    "electron": "^45.2.3",
+    "electron-builder": "^26.18.0",
+    "electron-updater": "^6.8.11",
     "esbuild": "^0.28.2",
     "framer-motion": "^11.18.2",
     "gsap": "^3.15.1",
@@ -91,5 +99,6 @@
     "typescript": "~5.8.3",
     "vite": "^6.4.4",
     "zustand": "^5.0.15"
-  }
+  },
+  "author": "Setups Works"
 }
