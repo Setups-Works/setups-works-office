@@ -1,17 +1,59 @@
 name: Release desktop app
 
-# Push a tag like v0.8.0 (it must match "version" in package.json) to build the Mac and Windows
-# apps and publish them as a GitHub Release. Installed apps update themselves from that release.
+# Actions → "Release desktop app" → Run workflow → type a version (for example 0.8.0).
+# It bumps package.json, commits, tags v<version>, builds the Mac and Windows apps and publishes
+# a GitHub Release. Installed apps update themselves from that release.
+# (Pushing a v* tag by hand still works too; the version must match package.json.)
 on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version to release, e.g. 0.8.0 (leave empty to use package.json as is)"
+        required: false
+        type: string
   push:
     tags: ["v*"]
-  workflow_dispatch:
 
 permissions:
   contents: write
 
 jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      ref: ${{ steps.out.outputs.ref }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Bump version, commit and tag
+        if: github.event_name == 'workflow_dispatch' && inputs.version != ''
+        run: |
+          v="${{ inputs.version }}"
+          v="${v#v}"
+          echo "$v" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.]+)?$' || { echo "Not a valid version: $v"; exit 1; }
+          git rev-parse "v$v" >/dev/null 2>&1 && { echo "Tag v$v already exists"; exit 1; }
+          npm version "$v" --no-git-tag-version --allow-same-version
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add package.json
+          git commit -m "Release v$v" || true
+          git tag "v$v"
+          git push origin "HEAD:${{ github.ref_name }}" "v$v"
+      - name: Resolve the ref to build
+        id: out
+        run: |
+          if [ "${{ github.event_name }}" = "push" ]; then
+            echo "ref=${{ github.ref_name }}" >> "$GITHUB_OUTPUT"
+          elif [ -n "${{ inputs.version }}" ]; then
+            v="${{ inputs.version }}"; echo "ref=v${v#v}" >> "$GITHUB_OUTPUT"
+          else
+            echo "ref=${{ github.ref_name }}" >> "$GITHUB_OUTPUT"
+          fi
+
   desktop:
+    needs: prepare
     strategy:
       fail-fast: false
       matrix:
@@ -33,6 +75,8 @@ jobs:
       WIN_CSC_KEY_PASSWORD: ${{ secrets.WIN_CSC_KEY_PASSWORD }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.prepare.outputs.ref }}
       - uses: pnpm/action-setup@v4
         with:
           version: 10
@@ -40,12 +84,6 @@ jobs:
         with:
           node-version: 22
           cache: pnpm
-      - name: Tag matches package version
-        if: startsWith(github.ref, 'refs/tags/v')
-        shell: bash
-        run: |
-          v=$(node -p "require('./package.json').version")
-          [ "refs/tags/v$v" = "$GITHUB_REF" ] || { echo "Tag $GITHUB_REF doesn't match package.json version $v"; exit 1; }
       - run: pnpm install --frozen-lockfile
       - run: pnpm typecheck
       - run: pnpm desktop:build

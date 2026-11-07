@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { FONT_STYLES, applyFont, savedFont, setFont, type FontStyle } from "../../../src/theme/fonts";
 
-const LINKS = [["Story", "#story"], ["Playground", "#playground"], ["Why", "#why"], ["Install", "#start"], ["FAQ", "#faq"]] as const;
+const LINKS = [["Story", "#story"], ["Playground", "#playground"], ["Why", "#why"], ["Download", "#download"], ["Install", "#start"], ["FAQ", "#faq"]] as const;
 
 export function Nav() {
   const [font, setF] = useState<FontStyle>(savedFont());

@@ -3,6 +3,7 @@ import { Hero } from "./sections/Hero";
 import { Story } from "./sections/Story";
 import { Playground } from "./sections/Playground";
 import { Why } from "./sections/Why";
+import { Download } from "./sections/Download";
 import { GetStarted } from "./sections/Start";
 import { Faq, Footer } from "./sections/FaqFooter";
 import { useToast } from "./ui";
@@ -18,6 +19,7 @@ export function App() {
         <Story />
         <Playground />
         <Why />
+        <Download />
         <GetStarted onCopied={copied} />
         <Faq />
       </main>

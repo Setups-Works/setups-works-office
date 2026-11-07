@@ -59,6 +59,6 @@ pnpm desktop:pack   # unpacked app in release/ (quick local check)
 pnpm desktop:dist   # installers for this OS in release/
 ```
 
-**Releasing:** bump `version` in `package.json`, commit, then push a matching tag (`git tag v0.8.0 && git push origin v0.8.0`). The *Release desktop app* workflow builds the Mac and Windows apps and publishes a GitHub Release; installed apps pick it up within a few hours. The updater reads that release, so the repo's releases must be publicly readable.
+**Releasing:** on GitHub open **Actions → Release desktop app → Run workflow** and type the version (for example `0.8.0`). The workflow bumps `package.json`, commits, tags `v0.8.0`, builds the Mac and Windows apps and publishes a GitHub Release. Installed apps pick it up within a few hours. (Pushing a `v*` tag by hand also works if it matches `package.json`.) The updater reads that release, so the repo's releases must be publicly readable.
 
 **Signing:** without certificates the apps are unsigned. Windows shows a SmartScreen warning, and macOS needs a right-click → Open the first time and **can't auto-update** (macOS only updates signed apps). To sign, add these repo secrets: `MAC_CSC_LINK` and `MAC_CSC_KEY_PASSWORD` (a Developer ID Application certificate as base64 `.p12`), `APPLE_ID`, `APPLE_APP_SPECIFIC_PASSWORD`, `APPLE_TEAM_ID` (notarization), and optionally `WIN_CSC_LINK` and `WIN_CSC_KEY_PASSWORD`.

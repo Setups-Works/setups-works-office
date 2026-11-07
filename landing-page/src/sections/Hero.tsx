@@ -98,13 +98,19 @@ export function Hero({ onCopied }: { onCopied: () => void }) {
           </div>
           <div className="h-in mt-6 flex flex-wrap gap-3">
             <a href="#playground" className="px-btn bg-yellow px-5 py-2.5 text-lg font-bold no-underline">Try the app ↓</a>
-            <a href="#start" className="px-btn bg-cream px-5 py-2.5 text-lg font-bold no-underline">Install</a>
+            <a href="#download" className="px-btn bg-cream px-5 py-2.5 text-lg font-bold no-underline">Download the app</a>
           </div>
           <div className="h-in mt-5"><CopyCommand onCopied={onCopied} /></div>
           <div className="h-in mt-4 flex flex-wrap items-center gap-2 text-cream">
             <span>Works with</span>
             <b className="border-2 border-ink bg-blue px-2 text-ink">Claude Code</b>
             <b className="border-2 border-ink bg-green px-2 text-ink">Codex</b>
+          </div>
+          <div className="h-in mt-3 flex flex-wrap items-center gap-2 text-cream">
+            <span>Apps for</span>
+            <b className="border-2 border-ink bg-cream px-2 text-ink">macOS</b>
+            <b className="border-2 border-ink bg-cream px-2 text-ink">Windows</b>
+            <b className="border-2 border-ink bg-cream px-2 text-ink">&gt;_ CLI</b>
           </div>
         </div>
         <div className="h-in flex justify-center lg:justify-end"><Office /></div>

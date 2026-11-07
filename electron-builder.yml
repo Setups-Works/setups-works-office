@@ -6,6 +6,8 @@ directories:
   buildResources: build
 # No asar: the HQ server runs as a child process and loads node_modules (including node-pty's
 # native binaries) normally from disk.
+# Predictable file names: the landing page links to these.
+artifactName: Setups-Works-Office-${version}-${os}-${arch}.${ext}
 asar: false
 files:
   - package.json
@@ -47,6 +49,7 @@ win:
     - { target: nsis, arch: [x64] }
   # Signing uses WIN_CSC_LINK / WIN_CSC_KEY_PASSWORD when set.
 nsis:
+  artifactName: Setups-Works-Office-Setup-${version}.${ext}
   oneClick: false
   perMachine: false
   allowToChangeInstallationDirectory: true
