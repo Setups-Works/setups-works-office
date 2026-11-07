@@ -49,28 +49,18 @@ HQ calls the `sbx` CLI and reads its output. sbx 0.48 changed several outputs (f
 
 Only members of the `setupsworks` npm org can publish. The README on npm updates only when a new version is published.
 
-## Desktop apps
+## Desktop app
 
-- **macOS: native Swift app** in `macos/` (SwiftUI + AppKit). It runs a bundled Node and the same HQ server the CLI uses, and shows the office in a `WKWebView`, with native pieces around it: a sidebar with the live team, board and activity (read from HQ's WebSocket), toolbar, menu bar item, notifications when an agent needs you, a Dock badge, Settings, drag a folder onto the window to open it, and Sparkle auto-update.
-- **Windows: Electron app** in `desktop/` (same server, in a window, with electron-updater).
-
-```bash
-pnpm mac:build      # builds "Setups Works Office.app" (+ zip and dmg) into macos/dist, for this Mac's architecture
-ARCH=x64 pnpm mac:build   # the Intel build
-pnpm desktop:dev    # Windows/Electron shell, for development
-pnpm desktop:dist   # Electron installer for this OS in release/
-```
-
-**Releasing:** on GitHub open **Actions → Release → Run workflow** and type the version (for example `0.9.2`). The workflow bumps `package.json`, commits, tags, creates one GitHub Release, builds the Mac apps (Apple silicon and Intel) and the Windows installer into it, and publishes the npm package. The repo's releases must be publicly readable for updates to work.
-
-**Mac auto-update (Sparkle):** the app checks `appcast-arm64.xml` / `appcast-x64.xml` on the latest release and verifies updates with an EdDSA key, so it works **without an Apple certificate**. The public key is in `macos/sparkle-public-key.txt`. The workflow needs the private key as a repo secret `SPARKLE_ED_PRIVATE_KEY` (without it the Mac app still builds, but doesn't auto-update). The key pair lives in the login keychain of the Mac that created it; to set the secret from that Mac:
+The Electron shell lives in `desktop/` (main process, project picker, login-shell PATH fix, auto-updater). It runs the same server the CLI runs (`dist-server/main.mjs`) as a child process and shows its UI in a window.
 
 ```bash
-macos/.cache/sparkle-tools/bin/generate_keys -x /tmp/sparkle.key && gh secret set SPARKLE_ED_PRIVATE_KEY < /tmp/sparkle.key && rm /tmp/sparkle.key
+pnpm desktop:dev    # build everything and open the app
+pnpm desktop:pack   # unpacked app in release/ (quick local check)
+pnpm desktop:dist   # installers for this OS in release/
 ```
 
-(`macos/.cache/sparkle-tools` comes from Sparkle's release tarball; `build-app.sh` doesn't need it.)
+**Releasing:** on GitHub open **Actions → Release → Run workflow** and type the version (for example `0.8.0`). The workflow bumps `package.json`, commits, tags `v0.8.0`, builds the Mac and Windows apps and publishes a GitHub Release. Installed apps pick it up within a few hours. (Pushing a `v*` tag by hand also works if it matches `package.json`.) The updater reads that release, so the repo's releases must be publicly readable.
 
-**Signing:** without certificates the Mac app is ad-hoc signed (first launch: right-click → Open) and the Windows app shows a SmartScreen warning. To sign the Mac app, add repo secrets `MAC_CSC_LINK` (Developer ID Application certificate, base64 `.p12`), `MAC_CSC_KEY_PASSWORD`, `MAC_SIGN_IDENTITY` (for example `Developer ID Application: Your Name (TEAMID)`), and for notarization `APPLE_ID`, `APPLE_APP_SPECIFIC_PASSWORD`, `APPLE_TEAM_ID`. For Windows: `WIN_CSC_LINK` and `WIN_CSC_KEY_PASSWORD`.
+**npm:** the same workflow publishes `@setupsworks/office` to npm (with provenance), skipping it if that version is already published. It needs a repo secret `NPM_TOKEN`: on npmjs.com create a **granular access token** with read and write access to the package that can publish without a one-time password, then `gh secret set NPM_TOKEN`. Without the secret the npm step is skipped.
 
-**npm:** the same workflow publishes `@setupsworks/office` (with provenance), skipping it if that version is already published. It needs a repo secret `NPM_TOKEN`: on npmjs.com create a **granular access token** with read and write access to the package that can publish without a one-time password, then `gh secret set NPM_TOKEN`.
+**Signing:** without certificates the apps are unsigned. Windows shows a SmartScreen warning, and macOS needs a right-click → Open the first time and **can't auto-update** (macOS only updates signed apps). To sign, add these repo secrets: `MAC_CSC_LINK` and `MAC_CSC_KEY_PASSWORD` (a Developer ID Application certificate as base64 `.p12`), `APPLE_ID`, `APPLE_APP_SPECIFIC_PASSWORD`, `APPLE_TEAM_ID` (notarization), and optionally `WIN_CSC_LINK` and `WIN_CSC_KEY_PASSWORD`.

@@ -22,9 +22,7 @@ Agents run **Claude Code** or **Codex**. Everything runs on your machine.
 
 ## Desktop app (macOS and Windows)
 
-Prefer a normal app to a terminal command? Download the installer from the [latest release](https://github.com/Setups-Works/setups-works-office/releases/latest): a `.dmg` for macOS 14 or newer (Apple silicon and Intel) or a `.exe` for Windows. Both start the same HQ server on a free localhost port and update themselves in the background. Use **File → Open Project…** to pick the git repo your team works on.
-
-The Mac app is native (Swift): a sidebar with your live team, board and activity, a menu bar item, notifications when an agent needs you, and a Dock badge.
+Prefer a normal app to a terminal command? Download the installer from the [latest release](https://github.com/Setups-Works/setups-works-office/releases/latest): a `.dmg` for macOS (Apple silicon and Intel) or a `.exe` for Windows. It starts the same HQ server on a free localhost port, shows it in its own window, and updates itself in the background. Use **File → Open Project…** to pick the git repo your team works on.
 
 ## Quick start
 

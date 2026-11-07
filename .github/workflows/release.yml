@@ -58,13 +58,14 @@ jobs:
           ref="${{ steps.out.outputs.ref }}"
           gh release view "$ref" >/dev/null 2>&1 || gh release create "$ref" --title "$ref" --generate-notes --verify-tag
 
-  # Windows: the Electron app.
   desktop:
     needs: prepare
     strategy:
       fail-fast: false
       matrix:
         include:
+          - os: macos-latest
+            target: --mac
           - os: windows-latest
             target: --win
     runs-on: ${{ matrix.os }}
@@ -109,79 +110,6 @@ jobs:
             fi
           fi
           pnpm exec electron-builder ${{ matrix.target }} --publish always $args
-
-  # macOS: the native Swift app (macos/), one build per architecture, plus the Sparkle update feeds.
-  macos:
-    needs: prepare
-    runs-on: macos-latest
-    env:
-      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      SPARKLE_ED_PRIVATE_KEY: ${{ secrets.SPARKLE_ED_PRIVATE_KEY }}
-      MAC_CSC_LINK: ${{ secrets.MAC_CSC_LINK }}
-      MAC_CSC_KEY_PASSWORD: ${{ secrets.MAC_CSC_KEY_PASSWORD }}
-      MAC_SIGN_IDENTITY: ${{ secrets.MAC_SIGN_IDENTITY }}
-      APPLE_ID: ${{ secrets.APPLE_ID }}
-      APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
-      APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: ${{ needs.prepare.outputs.ref }}
-      - uses: pnpm/action-setup@v4
-        with:
-          version: 10
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: pnpm
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm typecheck
-      - name: Build the web UI and server
-        run: pnpm build
-      - name: Import the signing certificate (if provided)
-        run: |
-          if [ -z "$MAC_CSC_LINK" ] || [ -z "$MAC_SIGN_IDENTITY" ]; then
-            echo "No MAC_CSC_LINK / MAC_SIGN_IDENTITY: the app is ad-hoc signed."
-            unset MAC_SIGN_IDENTITY; echo "MAC_SIGN_IDENTITY=" >> "$GITHUB_ENV"
-            exit 0
-          fi
-          echo "$MAC_CSC_LINK" | base64 --decode > "$RUNNER_TEMP/cert.p12"
-          security create-keychain -p ci "$RUNNER_TEMP/build.keychain"
-          security set-keychain-settings -lut 21600 "$RUNNER_TEMP/build.keychain"
-          security unlock-keychain -p ci "$RUNNER_TEMP/build.keychain"
-          security import "$RUNNER_TEMP/cert.p12" -k "$RUNNER_TEMP/build.keychain" -P "$MAC_CSC_KEY_PASSWORD" -T /usr/bin/codesign
-          security set-key-partition-list -S apple-tool:,apple: -s -k ci "$RUNNER_TEMP/build.keychain"
-          security list-keychains -d user -s "$RUNNER_TEMP/build.keychain" login.keychain
-      - name: Build the app (Apple silicon and Intel)
-        run: |
-          for arch in arm64 x64; do
-            SKIP_JS_BUILD=1 ARCH=$arch bash macos/build-app.sh
-          done
-      - name: Create the update feeds (Sparkle)
-        run: |
-          if [ -z "$SPARKLE_ED_PRIVATE_KEY" ]; then
-            echo "::warning::SPARKLE_ED_PRIVATE_KEY is not set, so the Mac app will not auto-update. See CONTRIBUTING.md."
-            exit 0
-          fi
-          V=$(python3 -c "import json;print([p for p in json.load(open('macos/Package.resolved'))['pins'] if p['identity']=='sparkle'][0]['state']['version'])")
-          curl -fsSL -o "$RUNNER_TEMP/sparkle.tar.xz" "https://github.com/sparkle-project/Sparkle/releases/download/$V/Sparkle-$V.tar.xz"
-          mkdir -p "$RUNNER_TEMP/sparkle" && tar -xJf "$RUNNER_TEMP/sparkle.tar.xz" -C "$RUNNER_TEMP/sparkle" ./bin
-          printf '%s' "$SPARKLE_ED_PRIVATE_KEY" > "$RUNNER_TEMP/ed.key"
-          TAG="${{ needs.prepare.outputs.ref }}"
-          for arch in arm64 x64; do
-            mkdir -p "feed-$arch"
-            cp macos/dist/*-mac-$arch.zip "feed-$arch/"
-            "$RUNNER_TEMP/sparkle/bin/generate_appcast" --ed-key-file "$RUNNER_TEMP/ed.key" \
-              --download-url-prefix "https://github.com/${{ github.repository }}/releases/download/$TAG/" \
-              -o "appcast-$arch.xml" "feed-$arch"
-          done
-          rm -f "$RUNNER_TEMP/ed.key"
-      - name: Upload to the release
-        run: |
-          TAG="${{ needs.prepare.outputs.ref }}"
-          files=(macos/dist/*.zip macos/dist/*.dmg)
-          for f in appcast-*.xml; do [ -f "$f" ] && files+=("$f"); done
-          gh release upload "$TAG" "${files[@]}" --clobber
 
   npm:
     needs: prepare

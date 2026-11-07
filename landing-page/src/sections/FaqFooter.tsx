@@ -5,7 +5,7 @@ import { gsap, reduced, useReveal } from "../fx";
 const FAQ = [
   ["Does it merge code for me?", "No. The office follows pull requests on GitHub and reports their status, but merging is always yours."],
   ["Where does the code run?", "Everything runs on your machine. Each agent gets its own Docker Sandbox (a small VM). Where sandboxes aren't supported, set agents to Local in Settings → Team and they run directly, with permission prompts on."],
-  ["Is there a desktop app?", "Yes. On macOS (14 or newer, Apple silicon and Intel) it's a native app with a sidebar, menu bar item and notifications. On Windows it's an installer. Both run the same server on a free localhost port in their own window and update themselves. Linux uses the npx command."],
+  ["Is there a desktop app?", "Yes, for macOS (Apple silicon and Intel) and Windows. It runs the same server on a free localhost port in its own window and updates itself. Linux uses the npx command."],
   ["Which platforms are supported?", "Sandboxes need macOS 14+ on Apple silicon, Windows 11, or Ubuntu 24.04+. Local mode works elsewhere."],
   ["Which agents can I use?", "Claude Code or Codex, chosen per agent for the lead and each worker."],
   ["Can I try it without risk?", "Yes. Use a throwaway repo: git init -b main, add a README, commit, then run the command above."],
