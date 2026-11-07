@@ -37,7 +37,7 @@ html[data-font] .font-term { font-size-adjust: 0.42; }
 
 @layer base {
   html { scroll-behavior: smooth; }
-  body { margin: 0; background: var(--color-grass); color: var(--color-ink); font-family: var(--font-ui); }
+  body { margin: 0; background: var(--color-navy-2); color: var(--color-cream); font-family: var(--font-ui); overflow-x: hidden; }
   button { font: inherit; color: inherit; cursor: pointer; }
   a { color: inherit; }
   ::selection { background: var(--color-yellow); }
@@ -63,3 +63,25 @@ html[data-font] .font-term { font-size-adjust: 0.42; }
 .pop { animation: pop .25s steps(4) both; }
 .blink { animation: blink 1s steps(2) infinite; }
 @media (prefers-reduced-motion: reduce) { .bob, .type-bar, .belt, .blink { animation: none; } html { scroll-behavior: auto; } }
+
+/* ---------- modern layer ---------- */
+.grid-bg { background-color: var(--color-navy-2);
+  background-image: linear-gradient(rgba(131,118,156,.13) 1px, transparent 1px), linear-gradient(90deg, rgba(131,118,156,.13) 1px, transparent 1px);
+  background-size: 40px 40px; }
+.dark-sec { background: var(--color-navy-2); position: relative; }
+.alt-sec { background: linear-gradient(180deg, #1d2b53, #16213f); position: relative; }
+.glow { position: absolute; border-radius: 9999px; filter: blur(90px); opacity: .45; pointer-events: none; }
+.text-grad { background: linear-gradient(90deg, var(--color-yellow), var(--color-pink) 50%, var(--color-blue)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+/* Glass pixel card with a cursor-following spotlight (set --mx / --my from JS). */
+.glass { position: relative; background: rgba(255,246,233,.06); border: 3px solid rgba(255,246,233,.22); box-shadow: 4px 4px 0 rgba(0,0,0,.45); backdrop-filter: blur(6px); overflow: hidden; transition: border-color .2s; }
+.glass::before { content: ""; position: absolute; inset: 0; background: radial-gradient(260px circle at var(--mx, 50%) var(--my, 50%), rgba(41,173,255,.28), transparent 60%); opacity: 0; transition: opacity .25s; pointer-events: none; }
+.glass:hover { border-color: var(--color-yellow); }
+.glass:hover::before { opacity: 1; }
+.marquee { display: flex; width: max-content; animation: marquee 32s linear infinite; }
+.marquee:hover { animation-play-state: paused; }
+@keyframes marquee { to { transform: translateX(-50%); } }
+.cursor-dot { position: fixed; left: 0; top: 0; width: 22px; height: 22px; margin: -11px 0 0 -11px; border: 3px solid var(--color-yellow); pointer-events: none; z-index: 60; mix-blend-mode: difference; }
+.reveal { opacity: 0; }
+.caret::after { content: "▌"; margin-left: 2px; animation: blink 1s steps(2) infinite; }
+@media (hover: none), (prefers-reduced-motion: reduce) { .cursor-dot { display: none; } }
+@media (prefers-reduced-motion: reduce) { .reveal { opacity: 1 !important; transform: none !important; } .marquee { animation: none; } }

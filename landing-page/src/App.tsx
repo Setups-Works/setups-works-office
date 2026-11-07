@@ -3,7 +3,8 @@ import { Hero } from "./sections/Hero";
 import { LiveDemo } from "./sections/LiveDemo";
 import { HowItWorks, Why } from "./sections/HowWhy";
 import { GetStarted } from "./sections/Start";
-import { Faq, FinalCta, Footer } from "./sections/FaqFooter";
+import { Faq, FinalCta, Footer, Stats } from "./sections/FaqFooter";
+import { PageChrome } from "./fx";
 import { useToast } from "./ui";
 
 export function App() {
@@ -11,9 +12,11 @@ export function App() {
   const copied = () => toast.show("Copied to clipboard!");
   return (
     <>
+      <PageChrome />
       <Nav />
       <main>
         <Hero onCopied={copied} />
+        <Stats />
         <LiveDemo />
         <HowItWorks />
         <Why />

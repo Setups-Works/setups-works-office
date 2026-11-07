@@ -5,18 +5,20 @@ export const INSTALL = "npx @setupsworks/office@latest";
 
 export function Section({ id, alt, children }: { id?: string; alt?: boolean; children: ReactNode }) {
   return (
-    <section id={id} className={`scroll-mt-20 py-20 ${alt ? "bg-cream-2/95" : "grass-bg"}`}>
-      <div className="mx-auto max-w-6xl px-5">{children}</div>
+    <section id={id} className={`${alt ? "alt-sec" : "dark-sec"} scroll-mt-16 overflow-hidden py-24`}>
+      <div className="glow -left-32 top-10 h-80 w-80 bg-blue/40" />
+      <div className="glow -right-32 bottom-10 h-80 w-80 bg-pink/30" />
+      <div className="relative mx-auto max-w-6xl px-5">{children}</div>
     </section>
   );
 }
 
-export function Heading({ chip, title, sub, dark }: { chip: string; title: string; sub?: string; dark?: boolean }) {
+export function Heading({ chip, title, sub }: { chip: string; title: string; sub?: string; dark?: boolean }) {
   return (
-    <div className="mx-auto mb-12 max-w-2xl text-center">
-      <span className="px-btn inline-block bg-yellow px-3 py-1 text-sm font-bold uppercase tracking-wider">{chip}</span>
-      <h2 className={`mt-5 text-4xl font-bold leading-tight md:text-5xl ${dark ? "text-cream" : "text-ink"}`}>{title}</h2>
-      {sub && <p className={`mt-3 text-lg ${dark ? "text-cream/90" : "text-muted"}`}>{sub}</p>}
+    <div className="mx-auto mb-14 max-w-2xl text-center">
+      <span className="reveal px-btn inline-block bg-yellow px-3 py-1 text-sm font-bold uppercase tracking-wider text-ink">{chip}</span>
+      <h2 className="reveal mt-5 text-4xl font-bold leading-tight text-cream md:text-5xl">{title}</h2>
+      {sub && <p className="reveal mt-3 text-lg text-cream/70">{sub}</p>}
     </div>
   );
 }

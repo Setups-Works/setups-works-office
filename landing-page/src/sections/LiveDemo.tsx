@@ -1,4 +1,5 @@
-import { useEffect, useReducer, useState } from "react";
+import { useEffect, useReducer, useRef, useState } from "react";
+import { burst, gsap, reduced } from "../fx";
 import { Section, Heading, Bot } from "../ui";
 import { agentPalette, stateStyle } from "../../../src/theme/tokens";
 import type { AgentState } from "../../../src/data/types";
@@ -109,12 +110,24 @@ export function LiveDemo() {
 
   const shipped = s.tasks.filter((t) => t.col === "done").length;
   const pct = s.tasks.length ? Math.round((shipped / s.tasks.length) * 100) : 0;
+  const box = useRef<HTMLDivElement>(null);
   const need = s.agents.filter((a) => a.state === "needs-input").length;
+
+  useEffect(() => {
+    if (pct === 100 && box.current) {
+      const r = box.current.getBoundingClientRect();
+      burst(r.left + r.width / 2, Math.min(Math.max(r.top + 120, 120), window.innerHeight - 120), 48);
+    }
+  }, [pct]);
+  useEffect(() => {
+    if (!s.asking || reduced() || !box.current) return;
+    gsap.fromTo(box.current, { x: -6 }, { x: 0, duration: 0.5, ease: "elastic.out(1.2, 0.2)" });
+  }, [s.asking]);
 
   return (
     <Section id="demo">
       <Heading dark chip="Interactive" title="Run the team. Right here." sub="Press Start team and watch tasks flow from the board to review. When an agent needs you, answer it, just like the real thing." />
-      <div className="px-box relative overflow-hidden">
+      <div ref={box} className="reveal px-box relative overflow-hidden text-ink">
         <div className="flex flex-wrap items-center gap-2 border-b-4 border-ink bg-cream-2 px-4 py-3">
           <b className="text-lg">Setups Works Office</b>
           <span className="border-2 border-ink bg-yellow px-2 text-xs font-bold">Demo data</span>
