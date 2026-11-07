@@ -87,9 +87,20 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm typecheck
       - run: pnpm desktop:build
-      - name: Build and publish (unsigned)
-        if: env.CSC_LINK == '' && env.WIN_CSC_LINK == ''
-        run: pnpm exec electron-builder ${{ matrix.target }} --publish always
-      - name: Build and publish (signed)
-        if: env.CSC_LINK != '' || env.WIN_CSC_LINK != ''
-        run: pnpm exec electron-builder ${{ matrix.target }} --publish always -c.mac.notarize=${{ env.APPLE_ID != '' }}
+      - name: Build and publish
+        shell: bash
+        run: |
+          # Secrets that aren't set arrive as empty strings, and electron-builder reads an empty
+          # CSC_LINK as a path to a certificate. Drop the empty ones.
+          for v in CSC_LINK CSC_KEY_PASSWORD APPLE_ID APPLE_APP_SPECIFIC_PASSWORD APPLE_TEAM_ID WIN_CSC_LINK WIN_CSC_KEY_PASSWORD; do
+            if [ -z "${!v}" ]; then unset "$v"; fi
+          done
+          args=""
+          if [ "${{ matrix.target }}" = "--mac" ]; then
+            if [ -z "$CSC_LINK" ]; then
+              args="-c.mac.identity=-"   # no certificate: ad-hoc sign so the app still launches
+            elif [ -n "$APPLE_ID" ]; then
+              args="-c.mac.notarize=true"
+            fi
+          fi
+          pnpm exec electron-builder ${{ matrix.target }} --publish always $args
