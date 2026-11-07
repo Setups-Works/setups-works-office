@@ -53,7 +53,10 @@
     "build": "tsc --noEmit -p . && tsc --noEmit -p server && vite build && node scripts/build-server.mjs",
     "preview": "vite preview",
     "prepack": "npm run build",
-    "postinstall": "node scripts/fix-node-pty.mjs"
+    "postinstall": "node scripts/fix-node-pty.mjs",
+    "landing:dev": "vite --config landing-page/vite.config.ts",
+    "landing:build": "tsc --noEmit -p landing-page && vite build --config landing-page/vite.config.ts",
+    "landing:preview": "vite preview --config landing-page/vite.config.ts"
   },
   "dependencies": {
     "@fontsource/inter": "^5.3.0",
