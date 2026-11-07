@@ -1,5 +1,5 @@
-// Persistence in the repo: .jsmhq/config.json (team + workflow, safe to commit)
-// and .jsmhq/plan.json (boards + tasks, owned by HQ).
+// Persistence in the repo: .swoffic/config.json (team + workflow, safe to commit)
+// and .swoffic/plan.json (boards + tasks, owned by HQ).
 
 import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
@@ -13,7 +13,17 @@ export interface PlanFile {
   tasks: Task[];
 }
 
-const dir = (root: string) => join(root, ".jsmhq");
+const dir = (root: string) => {
+  // Older versions kept this in .jsmhq; move it over once.
+  const next = join(root, ".swoffic");
+  const old = join(root, ".jsmhq");
+  try {
+    if (existsSync(old) && !existsSync(next)) renameSync(old, next);
+  } catch {
+    /* fall through to a fresh folder */
+  }
+  return next;
+};
 
 function readJson<T>(file: string): T | null {
   if (!existsSync(file)) return null;

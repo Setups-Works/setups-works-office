@@ -1,10 +1,10 @@
 import { Nav } from "./sections/Nav";
 import { Hero } from "./sections/Hero";
-import { LiveDemo } from "./sections/LiveDemo";
-import { HowItWorks, Why } from "./sections/HowWhy";
+import { Story } from "./sections/Story";
+import { Playground } from "./sections/Playground";
+import { Why } from "./sections/Why";
 import { GetStarted } from "./sections/Start";
-import { Faq, FinalCta, Footer, Stats } from "./sections/FaqFooter";
-import { PageChrome } from "./fx";
+import { Faq, Footer } from "./sections/FaqFooter";
 import { useToast } from "./ui";
 
 export function App() {
@@ -12,19 +12,16 @@ export function App() {
   const copied = () => toast.show("Copied to clipboard!");
   return (
     <>
-      <PageChrome />
       <Nav />
       <main>
         <Hero onCopied={copied} />
-        <Stats />
-        <LiveDemo />
-        <HowItWorks />
+        <Story />
+        <Playground />
         <Why />
         <GetStarted onCopied={copied} />
         <Faq />
-        <FinalCta onCopied={copied} />
       </main>
-      <Footer />
+      <Footer onCopied={copied} />
       {toast.node}
     </>
   );

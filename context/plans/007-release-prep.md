@@ -8,7 +8,7 @@
 - **Distribution:** npm package `setups-works-office` (`npx setups-works-office`), published by JSM's npm account. Homebrew later if asked; no desktop app or Docker image for v1.
 - **Runtime dependencies only:** node-pty, ws, the MCP SDK, zod. The UI ships pre-built.
 - **No templates:** HQ owns the plan and writes ROLE.md. Instead, an opt-in "Export plan to docs/plan.md" in Settings → Project (off by default — it writes a tracked file).
-- **First run:** a welcome screen when the repo has no `.jsmhq/config.json`: project name, lead + workers (Claude/Codex each), review tool.
+- **First run:** a welcome screen when the repo has no `.swoffic/config.json`: project name, lead + workers (Claude/Codex each), review tool.
 
 ### How to build it
 1. Compile the server with esbuild to `dist-server/`; `bin/setups-works-office.mjs` with `--repo`, `--port`, `--no-open`, `--version`, `--help`; serves the built UI by default.

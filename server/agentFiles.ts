@@ -11,9 +11,9 @@ import type { AgentConfig, HqConfig } from "../src/data/types";
 /** Team MCP config, passed with `claude --mcp-config` (so the project's own .mcp.json is untouched). */
 export const MCP_CONFIG = ".claude/hq-mcp.json";
 /** Local mode on Windows: hooks run this with node (no sh or curl there). */
-export const HOOK_SCRIPT = ".jsmhq-hook.mjs";
+export const HOOK_SCRIPT = ".swoffic-hook.mjs";
 /** HQ's generated role file. Its own name, so a ROLE.md the project has is never overwritten. */
-export const ROLE_FILE = ".jsmhq-role.md";
+export const ROLE_FILE = ".swoffic-role.md";
 export const HQ_FILES = [ROLE_FILE, ".claude/settings.local.json", MCP_CONFIG, HOOK_SCRIPT];
 
 /** Extra context for the generated role: the folder's own ROLE.md, and whether app variables are set. */
@@ -40,9 +40,9 @@ export async function adoptRoleFile(dir: string): Promise<string | null> {
   }
   return null;
 }
-export const MARK = "# jsmhq-hook";
+export const MARK = "# swoffic-hook";
 /** Same marker for node hook commands (cmd and PowerShell have no `#` comments). */
-const MARK_ARG = "--jsmhq-hook";
+const MARK_ARG = "--swoffic-hook";
 const isOurs = (command: string) => command.includes(MARK) || command.includes(MARK_ARG);
 
 /**
@@ -56,7 +56,7 @@ export function hookScriptFor(agent: AgentConfig, dir: string): string | null {
 }
 
 const HOOK_SCRIPT_SOURCE = `// Written by Setups Works Office (git-excluded). Sends this agent's hook events to HQ.
-// Usage: node .jsmhq-hook.mjs <url> <token> [--print-reply] | --print-role
+// Usage: node .swoffic-hook.mjs <url> <token> [--print-reply] | --print-role
 import { readFileSync } from "node:fs";
 
 const args = process.argv.slice(2).filter((a) => a !== "${MARK_ARG}");

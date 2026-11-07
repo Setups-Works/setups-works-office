@@ -1,0 +1,79 @@
+{
+  "project": {
+    "id": "setups-works-office",
+    "name": "Setups Works Office",
+    "repo": "Setups-Works/setups-works-office",
+    "hqPort": 7420,
+    "path": ""
+  },
+  "team": [
+    {
+      "id": "michael",
+      "name": "Michael",
+      "role": "Lead",
+      "isLead": true,
+      "cli": "codex",
+      "model": "",
+      "mode": "sandbox",
+      "color": "#ff77a8",
+      "skills": [],
+      "roleMd": "You are Michael, the lead. You plan and assign work. You never write app code.",
+      "sandbox": {
+        "resources": {
+          "cpus": null,
+          "memoryGb": null
+        },
+        "allow": [],
+        "deny": []
+      },
+      "workspacePath": null,
+      "mcp": []
+    },
+    {
+      "id": "dwight",
+      "name": "Dwight",
+      "role": "Developer",
+      "isLead": false,
+      "cli": "claude",
+      "model": "",
+      "mode": "sandbox",
+      "color": "#29adff",
+      "skills": [],
+      "roleMd": "You are Dwight, a developer on the team. You build the tasks assigned to you.",
+      "sandbox": {
+        "resources": {
+          "cpus": null,
+          "memoryGb": null
+        },
+        "allow": [],
+        "deny": []
+      },
+      "workspacePath": null,
+      "mcp": []
+    }
+  ],
+  "workflow": {
+    "review": {
+      "enabled": true,
+      "tool": "human",
+      "command": ""
+    },
+    "merge": {
+      "by": "human"
+    },
+    "deploy": {
+      "enabled": false,
+      "tool": "instacloud",
+      "command": "",
+      "perAgentEnvironments": false
+    }
+  },
+  "stack": {
+    "frameworks": [],
+    "tools": {
+      "auth": {
+        "id": "clerk"
+      }
+    }
+  }
+}

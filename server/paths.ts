@@ -1,5 +1,5 @@
 import { randomBytes } from "node:crypto";
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from "node:fs";
 import { homedir } from "node:os";
 import { join } from "node:path";
 
@@ -9,9 +9,21 @@ export const slugify = (s: string) =>
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/(^-|-$)/g, "") || "project";
 
-/** ~/.jsmhq/<project>/ — HQ's per-project home (agent folders, tokens). */
+/** Older versions used ~/.jsmhq; move it over once so existing teams keep their agent folders and tokens. */
+function migrateLegacyHome() {
+  const old = join(homedir(), ".jsmhq");
+  const next = join(homedir(), ".swoffic");
+  try {
+    if (existsSync(old) && !existsSync(next)) renameSync(old, next);
+  } catch {
+    /* keep going with a fresh folder */
+  }
+}
+
+/** ~/.swoffic/<project>/ — HQ's per-project home (agent folders, tokens). */
 export function projectHome(projectSlug: string): string {
-  const dir = join(homedir(), ".jsmhq", projectSlug);
+  migrateLegacyHome();
+  const dir = join(homedir(), ".swoffic", projectSlug);
   mkdirSync(dir, { recursive: true });
   return dir;
 }
