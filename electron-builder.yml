@@ -53,4 +53,5 @@ nsis:
   oneClick: false
   perMachine: false
   allowToChangeInstallationDirectory: true
-  deleteAppDataOnUninstall: false
+  deleteAppDataOnUninstall: true
+  include: build/installer.nsh

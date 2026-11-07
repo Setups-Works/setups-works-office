@@ -24,6 +24,8 @@ Agents run **Claude Code** or **Codex**. Everything runs on your machine.
 
 Prefer a normal app to a terminal command? Download the installer from the [latest release](https://github.com/Setups-Works/setups-works-office/releases/latest): a `.dmg` for macOS (Apple silicon and Intel) or a `.exe` for Windows. It starts the same HQ server on a free localhost port, shows it in its own window, and updates itself in the background. Use **File → Open Project…** to pick the git repo your team works on.
 
+**Uninstalling:** use **Help → Uninstall Setups Works Office…** in the app. On macOS it removes the app (to the Trash), its settings, caches, logs and saved state, and, if you tick the box, your teams' data (`~/.swoffic`, agent tmux sessions and sandboxes). On Windows it runs the uninstaller, which does the same and asks before deleting your teams' data. Your git repositories are never touched.
+
 ## Quick start
 
 From inside a git repo that has a GitHub remote:

@@ -7,6 +7,7 @@ import { createServer } from "node:net";
 import { join } from "node:path";
 import { appPath } from "./shellPath";
 import { checkForUpdatesNow, setupUpdater } from "./updater";
+import { uninstall } from "./uninstall";
 
 // Same folder in dev and packaged builds, whatever the npm package name is.
 app.setName("Setups Works Office");
@@ -33,6 +34,7 @@ function loadSettings(): Settings {
   }
 }
 function saveSettings(s: Settings) {
+  if (frozen) return;
   try {
     mkdirSync(app.getPath("userData"), { recursive: true });
     writeFileSync(settingsFile(), JSON.stringify(s, null, 2));
@@ -48,6 +50,7 @@ let logStream: WriteStream | null = null;
 let currentUrl: string | null = null;
 let currentRepo: string | null = null;
 let quitting = false;
+let frozen = false; // set while uninstalling so nothing is written back to disk
 
 const logFile = () => join(app.getPath("userData"), "logs", "server.log");
 
@@ -218,6 +221,20 @@ function createWindow() {
   win.on("closed", () => (win = null));
 }
 
+function runUninstall() {
+  return uninstall({
+    win: () => win,
+    stopServer: () => {
+      quitting = true;
+      return killServer();
+    },
+    recentRepos: () => settings.recent,
+    freeze: () => {
+      frozen = true;
+    },
+  });
+}
+
 function buildMenu() {
   const isMac = process.platform === "darwin";
   const recent: MenuItemConstructorOptions[] = settings.recent.length
@@ -244,7 +261,7 @@ function buildMenu() {
     { role: "editMenu" },
     { label: "View", submenu: [{ role: "reload" }, { role: "forceReload" }, { role: "toggleDevTools" }, { type: "separator" }, { role: "resetZoom" }, { role: "zoomIn" }, { role: "zoomOut" }, { type: "separator" }, { role: "togglefullscreen" }] },
     { role: "windowMenu" },
-    { role: "help", submenu: [{ label: "Documentation", click: () => void shell.openExternal(`${REPO_URL}#readme`) }, { label: "Report an Issue", click: () => void shell.openExternal(`${REPO_URL}/issues`) }] },
+    { role: "help", submenu: [{ label: "Documentation", click: () => void shell.openExternal(`${REPO_URL}#readme`) }, { label: "Report an Issue", click: () => void shell.openExternal(`${REPO_URL}/issues`) }, { type: "separator" }, { label: "Uninstall Setups Works Office…", click: () => void runUninstall() }] },
   ];
   Menu.setApplicationMenu(Menu.buildFromTemplate(template));
 }
