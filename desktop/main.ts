@@ -150,7 +150,7 @@ async function startServer(repo: string): Promise<string> {
   });
 }
 
-async function openProject(repo: string) {
+async function openProject(repo: string, remember = true) {
   if (!isGitRepo(repo)) {
     await dialog.showMessageBox({ type: "warning", message: "That folder isn't a git repository", detail: `${repo}\n\nChoose the folder of a git repo (it has a .git folder).` });
     return false;
@@ -165,12 +165,15 @@ async function openProject(repo: string) {
     await splash("Couldn't start the office", String((e as Error).message));
     const { response } = await dialog.showMessageBox({ type: "error", message: "Couldn't start the office", detail: String((e as Error).message).slice(0, 600), buttons: ["Choose another project…", "Retry", "Quit"], defaultId: 1, cancelId: 2 });
     if (response === 0) return chooseProject();
-    if (response === 1) return openProject(repo);
+    if (response === 1) return openProject(repo, remember);
     app.quit();
     return false;
   }
-  settings = { ...settings, lastRepo: repo, recent: [repo, ...settings.recent.filter((p) => p !== repo)].slice(0, 8) };
-  saveSettings(settings);
+  // A repo forced through SWO_REPO (tests, scripts) is not remembered as your project.
+  if (remember) {
+    settings = { ...settings, lastRepo: repo, recent: [repo, ...settings.recent.filter((p) => p !== repo)].slice(0, 8) };
+    saveSettings(settings);
+  }
   buildMenu();
   await win?.loadURL(currentUrl);
   return true;
@@ -277,7 +280,7 @@ if (!app.requestSingleInstanceLock()) {
       const ok = await chooseProject();
       if (!ok && !currentUrl) return app.quit();
       repo = currentRepo ?? undefined;
-    } else if (!(await openProject(repo))) {
+    } else if (!(await openProject(repo, !process.env.SWO_REPO))) {
       return;
     }
     if (SMOKE) {
