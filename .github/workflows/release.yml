@@ -1,15 +1,15 @@
-name: Release desktop app
+name: Release
 
-# Actions → "Release desktop app" → Run workflow → type a version (for example 0.8.0).
-# It bumps package.json, commits, tags v<version>, builds the Mac and Windows apps and publishes
-# a GitHub Release. Installed apps update themselves from that release.
-# (Pushing a v* tag by hand still works too; the version must match package.json.)
+# Actions → "Release" → Run workflow → type a version (for example 0.9.2).
+# It bumps package.json, commits, tags v<version>, creates ONE GitHub Release, builds the Mac and
+# Windows apps into it and publishes the npm package. Installed apps update themselves from the release.
+# (Pushing a v* tag by hand also works; the version must match package.json.)
 on:
   workflow_dispatch:
     inputs:
       version:
-        description: "Version to release, e.g. 0.8.0 (leave empty to use package.json as is)"
-        required: false
+        description: "Version to release, e.g. 0.9.2"
+        required: true
         type: string
   push:
     tags: ["v*"]
@@ -22,13 +22,15 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       ref: ${{ steps.out.outputs.ref }}
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 22
       - name: Bump version, commit and tag
-        if: github.event_name == 'workflow_dispatch' && inputs.version != ''
+        if: github.event_name == 'workflow_dispatch'
         run: |
           v="${{ inputs.version }}"
           v="${v#v}"
@@ -41,16 +43,20 @@ jobs:
           git commit -m "Release v$v" || true
           git tag "v$v"
           git push origin "HEAD:${{ github.ref_name }}" "v$v"
-      - name: Resolve the ref to build
+      - name: Resolve the tag to build
         id: out
         run: |
           if [ "${{ github.event_name }}" = "push" ]; then
             echo "ref=${{ github.ref_name }}" >> "$GITHUB_OUTPUT"
-          elif [ -n "${{ inputs.version }}" ]; then
-            v="${{ inputs.version }}"; echo "ref=v${v#v}" >> "$GITHUB_OUTPUT"
           else
-            echo "ref=${{ github.ref_name }}" >> "$GITHUB_OUTPUT"
+            v="${{ inputs.version }}"; echo "ref=v${v#v}" >> "$GITHUB_OUTPUT"
           fi
+      # One release for the tag, created here, so the Mac and Windows jobs upload into the same one
+      # (if each job created its own, the release would be split in two).
+      - name: Create the GitHub release once
+        run: |
+          ref="${{ steps.out.outputs.ref }}"
+          gh release view "$ref" >/dev/null 2>&1 || gh release create "$ref" --title "$ref" --generate-notes --verify-tag
 
   desktop:
     needs: prepare
@@ -104,3 +110,31 @@ jobs:
             fi
           fi
           pnpm exec electron-builder ${{ matrix.target }} --publish always $args
+
+  npm:
+    needs: prepare
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write # npm provenance
+    env:
+      NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.prepare.outputs.ref }}
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          registry-url: https://registry.npmjs.org
+      - name: Publish to npm
+        run: |
+          if [ -z "$NODE_AUTH_TOKEN" ]; then echo "NPM_TOKEN secret not set: skipping the npm publish."; exit 0; fi
+          v=$(node -p "require('./package.json').version")
+          if npm view "@setupsworks/office@$v" version >/dev/null 2>&1; then echo "@setupsworks/office@$v is already on npm."; exit 0; fi
+          pnpm install --frozen-lockfile
+          npm publish --access public --provenance

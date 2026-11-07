@@ -6,7 +6,7 @@
 [![license](https://img.shields.io/npm/l/@setupsworks/office)](LICENSE)
 [![node](https://img.shields.io/node/v/@setupsworks/office)](https://nodejs.org)
 
-![The Setups Works Office office: a lead and two developers at their desks, the task board on the wall, pull requests on the board and the review gate on the belt](https://cdn.jsdelivr.net/npm/@setupsworks/office@0.7.6/docs/images/office.png)
+![The Setups Works Office office: a lead and two developers at their desks, the task board on the wall, pull requests on the board and the review gate on the belt](https://cdn.jsdelivr.net/npm/@setupsworks/office/docs/images/office.png)
 
 One **lead** agent plans the work and hands out tasks. Each **worker** gets its own desk, its own copy of your repo and its own Docker Sandbox, then opens a pull request. You see it all happen: the plan on the wall, agents at their desks, PRs moving through review.
 
@@ -76,7 +76,7 @@ You don't need to install these by hand first. HQ checks for each one and shows 
 
 ## How it works
 
-![An agent's drawer: its live terminal, its sandbox, websites it tried to reach, and tabs for its task and messages](https://cdn.jsdelivr.net/npm/@setupsworks/office@0.7.6/docs/images/agent-drawer.png)
+![An agent's drawer: its live terminal, its sandbox, websites it tried to reach, and tabs for its task and messages](https://cdn.jsdelivr.net/npm/@setupsworks/office/docs/images/agent-drawer.png)
 
 1. **You tell the lead what to build.** It creates a board of small tasks, each with the files it may touch, and assigns them.
 2. **Workers build in their own sandboxes.** Each one pulls `main`, makes a branch, writes the code and opens a PR titled `[TASK-ID] …`.
