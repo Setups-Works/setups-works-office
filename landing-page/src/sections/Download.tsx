@@ -62,7 +62,7 @@ export function Download() {
       <div ref={root} className="relative mx-auto max-w-6xl px-4">
         <Heading label="Desktop app" title="A real app for Mac and Windows." sub="Same office, in its own window. It starts the server for you on localhost and updates itself." />
         <div className="grid gap-6 md:grid-cols-3">
-          <Card you={os === "mac"} title="macOS" sub="macOS 11 or newer · Apple silicon and Intel">
+          <Card you={os === "mac"} title="macOS" sub="macOS 14 or newer · Apple silicon and Intel · native app">
             <Btn primary href={mac("mac_arm")}>⬇ Apple silicon (.dmg)</Btn>
             <Btn href={mac("mac_x64")}>⬇ Intel (.dmg)</Btn>
           </Card>
@@ -78,7 +78,7 @@ export function Download() {
 
         <div className="reveal px-box-dark mt-6 grid gap-4 p-5 sm:grid-cols-3">
           {[
-            ["↻", "Updates itself", "Checks every few hours, downloads in the background and asks before restarting."],
+            ["↻", "Updates itself", "Checks every few hours and installs in the background. Mac and Windows."],
             ["⌂", "Runs locally", "The server binds to 127.0.0.1 on a free port. Nothing leaves your machine."],
             ["▦", "Pick any repo", "File → Open Project… switches teams. It remembers your recent projects."],
           ].map(([i, t, p]) => (

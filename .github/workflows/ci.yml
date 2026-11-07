@@ -55,3 +55,10 @@ jobs:
       - run: apt-get update -qq && apt-get install -y -qq git >/dev/null
       - run: "! command -v make && ! command -v g++ && ! command -v python3"
       - run: node scripts/smoke-test.mjs pack/*.tgz 7431
+
+  # The native macOS app compiles (the full .app is built by the release workflow).
+  macos-app:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: swift build -c release --package-path macos
